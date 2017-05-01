@@ -25,23 +25,17 @@ class myUnet(object):
 		inputs = Input((self.img_rows, self.img_cols,3))
 
 		conv1 = Conv2D(64, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(inputs)
-		print "conv1 shape:",conv1.shape
 		conv1 = Conv2D(64, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(conv1)
-		print "conv1 shape:",conv1.shape
 		pool1 = MaxPooling2D(pool_size=(2, 2))(conv1)
 		print "pool1 shape:",pool1.shape
 
 		conv2 = Conv2D(128, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(pool1)
-		print "conv2 shape:",conv2.shape
 		conv2 = Conv2D(128, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(conv2)
-		print "conv2 shape:",conv2.shape
 		pool2 = MaxPooling2D(pool_size=(2, 2))(conv2)
 		print "pool2 shape:",pool2.shape
 
 		conv3 = Conv2D(256, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(pool2)
-		print "conv3 shape:",conv3.shape
 		conv3 = Conv2D(256, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(conv3)
-		print "conv3 shape:",conv3.shape
 		pool3 = MaxPooling2D(pool_size=(2, 2))(conv3)
 		print "pool3 shape:",pool3.shape
 
@@ -49,6 +43,7 @@ class myUnet(object):
 		conv4 = Conv2D(512, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(conv4)
 		drop4 = Dropout(0.5)(conv4)
 		pool4 = MaxPooling2D(pool_size=(2, 2))(drop4)
+		print "pool4 shape:",pool4.shape
 
 		conv5 = Conv2D(1024, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(pool4)
 		conv5 = Conv2D(1024, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(conv5)
@@ -58,22 +53,26 @@ class myUnet(object):
 		merge6 = merge([drop4,up6], mode = 'concat', concat_axis = 3)
 		conv6 = Conv2D(512, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(merge6)
 		conv6 = Conv2D(512, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(conv6)
+		print "conv6 shape:",conv6.shape
 
 		up7 = Conv2D(256, 2, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(UpSampling2D(size = (2,2))(conv6))
 		merge7 = merge([conv3,up7], mode = 'concat', concat_axis = 3)
 		conv7 = Conv2D(256, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(merge7)
 		conv7 = Conv2D(256, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(conv7)
+		print "conv7 shape:",conv7.shape
 
 		up8 = Conv2D(128, 2, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(UpSampling2D(size = (2,2))(conv7))
 		merge8 = merge([conv2,up8], mode = 'concat', concat_axis = 3)
 		conv8 = Conv2D(128, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(merge8)
 		conv8 = Conv2D(128, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(conv8)
+		print "conv8 shape:",conv8.shape
 
 		up9 = Conv2D(64, 2, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(UpSampling2D(size = (2,2))(conv8))
 		merge9 = merge([conv1,up9], mode = 'concat', concat_axis = 3)
 		conv9 = Conv2D(64, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(merge9)
 		conv9 = Conv2D(64, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(conv9)
 		conv9 = Conv2D(12, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(conv9)
+		print "conv9 shape:",conv9.shape
 		
 		reshape = Reshape((12,self.img_rows * self.img_cols), input_shape = (12, self.img_rows, self.img_cols))(conv9)
 		permute = Permute((2,1))(reshape)
