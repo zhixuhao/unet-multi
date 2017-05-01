@@ -50,10 +50,11 @@ class myUnet(object):
 		drop5 = Dropout(0.5)(conv5)
 
 		up6 = Conv2D(512, 2, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(UpSampling2D(size = (2,2))(drop5))
+		up6 = ZeroPadding2D(padding = (1,0))(up6)
+		print "up6 shape:",up6.shape
 		merge6 = merge([drop4,up6], mode = 'concat', concat_axis = 3)
 		conv6 = Conv2D(512, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(merge6)
 		conv6 = Conv2D(512, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(conv6)
-		print "conv6 shape:",conv6.shape
 
 		up7 = Conv2D(256, 2, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(UpSampling2D(size = (2,2))(conv6))
 		merge7 = merge([conv3,up7], mode = 'concat', concat_axis = 3)
