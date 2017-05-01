@@ -42,7 +42,7 @@ class myUnet(object):
 		conv4 = Conv2D(512, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(pool3)
 		conv4 = Conv2D(512, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(conv4)
 		drop4 = Dropout(0.5)(conv4)
-		pool4 = MaxPooling2D(pool_size=(2, 2))(drop4)
+		pool4 = MaxPooling2D(pool_size=(2, 2), padding = 'same')(drop4)
 		print "pool4 shape:",pool4.shape
 
 		conv5 = Conv2D(1024, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(pool4)
@@ -50,7 +50,7 @@ class myUnet(object):
 		drop5 = Dropout(0.5)(conv5)
 
 		up6 = Conv2D(512, 2, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(UpSampling2D(size = (2,2))(drop5))
-		up6 = ZeroPadding2D(padding = (1,0))(up6)
+		up6 = Cropping2D(cropping = ((1,0),(0,0)))(up6)
 		print "up6 shape:",up6.shape
 		merge6 = merge([drop4,up6], mode = 'concat', concat_axis = 3)
 		conv6 = Conv2D(512, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(merge6)
@@ -76,7 +76,11 @@ class myUnet(object):
 		print "conv9 shape:",conv9.shape
 		
 		reshape = Reshape((12,self.img_rows * self.img_cols), input_shape = (12, self.img_rows, self.img_cols))(conv9)
+		print "reshape shape:",reshape.shape
+
 		permute = Permute((2,1))(reshape)
+		print "permute shape:",permute.shape
+
 		activation = Activation('softmax')(permute)
 
 		model = Model(input = inputs, output = activation)
