@@ -8,7 +8,7 @@ from data import dataProcess
 
 class myUnet(object):
 
-	def __init__(self, img_rows = 512, img_cols = 512):
+	def __init__(self, img_rows = 360, img_cols = 480):
 
 		self.img_rows = img_rows
 		self.img_cols = img_cols
