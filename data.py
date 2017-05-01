@@ -43,6 +43,7 @@ class dataProcess(object):
 				print('Done: {0}/{1} images'.format(i, len(txt)))
 			i += 1
 		print('loading done')
+		train_label = np.reshape(train_label, (len(txt),self.out_cols * self.out_rows,self.num_class))
 		np.save(self.npy_path + '/imgs_train.npy', train_data)
 		np.save(self.npy_path + '/imgs_mask_train.npy', train_label)
 		print('Saving to .npy files done.')
@@ -63,6 +64,7 @@ class dataProcess(object):
 				print('Done: {0}/{1} images'.format(i, len(txt)))
 			i += 1
 		print('loading done')
+		test_label = np.reshape(test_label, (len(txt),self.out_cols * self.out_rows,self.num_class))
 		np.save(self.npy_path + '/imgs_test.npy', test_data)
 		np.save(self.npy_path + '/imgs_mask_test.npy', test_label)
 		print('Saving to .npy files done.')
